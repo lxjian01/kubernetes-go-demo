@@ -6,9 +6,9 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
-	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
@@ -46,7 +46,16 @@ func main() {
 	for _,item := range pods.Items{
 		fmt.Println(item.Name)
 	}
-	startWatchPod(podsClient)
+
+	tt := WatchResources(podsClient)
+	a := tt.ListKeys()
+	fmt.Println(a)
+	for _,item := range a{
+		fmt.Println("1111111111111")
+		fmt.Println(item)
+		fmt.Println("22222222222")
+	}
+	//startWatchPod(podsClient)
 	//deploymentsClient := clientset.AppsV1().Deployments(apiv1.NamespaceDefault)
 }
 
@@ -67,38 +76,26 @@ func startWatchPod(podsClient corev1.PodInterface) {
 				fmt.Println(e.Type)
 				yyyy := e.Object.(*v1.Pod)
 				fmt.Println(yyyy.Name)
-				podStore, _ := cache.NewInformer(
-					&cache.ListWatch{
-						ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
-							return podsClient.List(lo)
-						},
-						WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
-							return podsClient.Watch(lo)
-						},
-					},
-					&v1.Pod{},
-					1*time.Minute,
-					cache.ResourceEventHandlerFuncs{},
-				)
-				project,_,err := podStore.GetByKey("default/nginx-deployment")
-				if err != nil {
-					fmt.Println(err)
-				}else{
-					tt := project.(*v1.Pod)
-					fmt.Println(tt)
-				}
 			}
 		}
 	}
 }
 
-//监听Deployment变化
-func startWatchDeployment(deploymentsClient appsv1.DeploymentInterface) {
-	w, _ := deploymentsClient.Watch(metav1.ListOptions{})
-	for {
-		select {
-		case e, _ := <-w.ResultChan():
-			fmt.Println(e.Type, e.Object)
-		}
-	}
+func WatchResources(podsClient corev1.PodInterface) cache.Store {
+	podStore, projectController := cache.NewInformer(
+		&cache.ListWatch{
+			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
+				return podsClient.List(lo)
+			},
+			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
+				return podsClient.Watch(lo)
+			},
+		},
+		&v1.Pod{},
+		1*time.Minute,
+		cache.ResourceEventHandlerFuncs{},
+	)
+
+	go projectController.Run(wait.NeverStop)
+	return podStore
 }
