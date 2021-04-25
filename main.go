@@ -3,14 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
+	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 	"path/filepath"
-	"reflect"
 	"time"
 )
 
@@ -50,7 +53,6 @@ func main() {
 //监听Pod变化
 func startWatchPod(podsClient corev1.PodInterface) {
 	w, _ := podsClient.Watch(metav1.ListOptions{})
-
 	for {
 		select {
 		case e, ok := <-w.ResultChan():
@@ -63,26 +65,27 @@ func startWatchPod(podsClient corev1.PodInterface) {
 			if e.Object != nil {
 				fmt.Println("chan is ok")
 				fmt.Println(e.Type)
-
-				v := reflect.ValueOf(e.Object)
-				for i := 0; i < v.NumField(); i++ {
-					switch v.Field(i).Kind() {
-					case reflect.Int:
-						if i == 0 {
-							fmt.Sprintf("%d", v.Field(i).Int())
-						} else {
-							fmt.Sprintf("%d", v.Field(i).Int())
-						}
-					case reflect.String:
-						if i == 0 {
-							fmt.Sprintf("%s", v.Field(i).String())
-						} else {
-							fmt.Sprintf("%s", v.Field(i).String())
-						}
-					default:
-						fmt.Println("Unsupported type")
-						return
-					}
+				yyyy := e.Object.(*v1.Pod)
+				fmt.Println(yyyy.Name)
+				podStore, _ := cache.NewInformer(
+					&cache.ListWatch{
+						ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
+							return podsClient.List(lo)
+						},
+						WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
+							return podsClient.Watch(lo)
+						},
+					},
+					&v1.Pod{},
+					1*time.Minute,
+					cache.ResourceEventHandlerFuncs{},
+				)
+				project,_,err := podStore.GetByKey("default/nginx-deployment")
+				if err != nil {
+					fmt.Println(err)
+				}else{
+					tt := project.(*v1.Pod)
+					fmt.Println(tt)
 				}
 			}
 		}

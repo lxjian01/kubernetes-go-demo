@@ -8,6 +8,7 @@ require (
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/googleapis/gnostic v0.4.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	golang.org/x/net v0.0.0-20210421230115-4e50805a0758 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
