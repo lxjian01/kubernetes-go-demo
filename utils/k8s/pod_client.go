@@ -52,7 +52,7 @@ func (client *PodClient) WatchPod() {
 		case e, ok := <-w.ResultChan():
 			if !ok {
 				// 说明该通道已经被close掉了
-				fmt.Println("!!!!!podWatch chan has been close!!!!")
+				fmt.Println("pod watch chan has been close!!!!")
 				fmt.Println("clean chan over!")
 				time.Sleep(time.Second * 5)
 			}

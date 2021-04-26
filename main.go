@@ -30,6 +30,14 @@ func main() {
 		panic(err)
 	}
 
+	// service
+	serviceClient := utilsk8s.ServiceClient{Name: "default"}
+	serviceClient.InitServiceClient(clientset)
+	serviceList,err := serviceClient.GetServiceList(metav1.ListOptions{})
+	for _,item := range serviceList.Items{
+		fmt.Println(item.Name)
+	}
+
 	// deployment
 	deploymentClient := utilsk8s.DeploymentClient{Name: "default"}
 	deploymentClient.InitDeploymentClient(clientset)
