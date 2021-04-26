@@ -86,16 +86,16 @@ func (client *PodClient) CacheWatchPod() cache.Store {
 		cache.ResourceEventHandlerFuncs{
 			AddFunc: func(obj interface{}) {
 				pod := obj.(*v1.Pod)
-				log.Infof("pod added: podName=%s, time is %s \n", pod.Name, time.Now())
+				log.Infof("pod add: podName=%s, time is %s \n", pod.Name, time.Now())
 			},
 			UpdateFunc:func(oldObj, newObj interface{}) {
 				oldPod := oldObj.(*v1.Pod)
 				newPod := newObj.(*v1.Pod)
-				log.Infof("pod changed: oldPodName=%s, newPodName=%s, time is %s \n", oldPod.Name, newPod.Name,time.Now())
+				log.Infof("pod update: oldPodName=%s, newPodName=%s, time is %s \n", oldPod.Name, newPod.Name,time.Now())
 			},
 			DeleteFunc: func(obj interface{}) {
 				pod := obj.(*v1.Pod)
-				log.Infof("pod deleted: podName=%s, time is %s \n", pod.Name, time.Now())
+				log.Infof("pod delete: podName=%s, time is %s \n", pod.Name, time.Now())
 			},
 		},
 	)

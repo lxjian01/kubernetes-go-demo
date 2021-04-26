@@ -4,8 +4,13 @@ import (
 	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
+	"k8s.io/client-go/tools/cache"
+	"kubernetes-go-demo/log"
 	"time"
 )
 
@@ -59,4 +64,36 @@ func (client *DeploymentClient) WatchDeployment() {
 			}
 		}
 	}
+}
+
+func (client *DeploymentClient) CacheWatchDeployment() cache.Store {
+	deploymentStore, deploymentController := cache.NewInformer(
+		&cache.ListWatch{
+			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
+				return client.deploymentInterface.List(lo)
+			},
+			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
+				return client.deploymentInterface.Watch(lo)
+			},
+		},
+		&v1.Deployment{},
+		time.Second * 10,
+		cache.ResourceEventHandlerFuncs{
+			AddFunc: func(obj interface{}) {
+				deployment := obj.(*v1.Deployment)
+				log.Infof("deployment add: deploymentName=%s, time is %s \n", deployment.Name, time.Now())
+			},
+			UpdateFunc:func(oldObj, newObj interface{}) {
+				oldDeployment := oldObj.(*v1.Deployment)
+				newDeployment := newObj.(*v1.Deployment)
+				log.Infof("deployment update: oldDeploymentName=%s, newDeploymentName=%s, time is %s \n", oldDeployment.Name, newDeployment.Name,time.Now())
+			},
+			DeleteFunc: func(obj interface{}) {
+				deployment := obj.(*v1.Deployment)
+				log.Infof("deployment delete: deploymentName=%s, time is %s \n", deployment.Name, time.Now())
+			},
+		},
+	)
+	go deploymentController.Run(wait.NeverStop)
+	return deploymentStore
 }
