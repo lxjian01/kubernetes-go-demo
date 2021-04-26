@@ -7,7 +7,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
-	"kubernetes-go-demo/utils"
+	utilsk8s "kubernetes-go-demo/utils/k8s"
 	"path/filepath"
 )
 
@@ -31,7 +31,7 @@ func main() {
 	}
 
 	// deployment
-	deploymentClient := utils.DeploymentClient{Name: "default"}
+	deploymentClient := utilsk8s.DeploymentClient{Name: "default"}
 	deploymentClient.InitDeploymentClient(clientset)
 	deploymentList,err := deploymentClient.GetDeploymentList(metav1.ListOptions{})
 	for _,item := range deploymentList.Items{
@@ -39,7 +39,7 @@ func main() {
 	}
 
 	// pod
-	podClient := utils.PodClient{Name: "default"}
+	podClient := utilsk8s.PodClient{Name: "default"}
 	podClient.InitPodClient(clientset)
 	podList,err := podClient.GetPodList(metav1.ListOptions{})
 	for _,item := range podList.Items{
