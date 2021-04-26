@@ -29,8 +29,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	deploymentsClient := clientset.AppsV1().Deployments("nginx-deployment")
-	fmt.Println(deploymentsClient)
+
+	// deployment
+	deploymentClient := utils.DeploymentClient{Name: "default"}
+	deploymentClient.InitDeploymentClient(clientset)
+	deploymentList,err := deploymentClient.GetDeploymentList(metav1.ListOptions{})
+	for _,item := range deploymentList.Items{
+		fmt.Println(item.Name)
+	}
 
 	// pod
 	podClient := utils.PodClient{Name: "default"}
