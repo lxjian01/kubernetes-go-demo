@@ -12,6 +12,7 @@ import (
 	utilsk8s "kubernetes-go-demo/utils/k8s"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 
@@ -65,6 +66,10 @@ func main() {
 	podList,err := podClient.GetPodList(metav1.ListOptions{})
 	for _,item := range podList.Items{
 		log.Infof("pod name is %s \n",item.Name)
+	}
+	podClient.CacheWatchPod()
+	for{
+		time.Sleep(time.Minute * 6)
 	}
 }
 

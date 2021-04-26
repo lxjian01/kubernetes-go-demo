@@ -4,8 +4,13 @@ import (
 	"fmt"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	"k8s.io/client-go/tools/cache"
+	"kubernetes-go-demo/log"
 	"time"
 )
 
@@ -66,20 +71,34 @@ func (client *PodClient) WatchPod() {
 	}
 }
 
-//func (client *PodClient) WatchPod() cache.Store {
-//	podStore, podController := cache.NewInformer(
-//		&cache.ListWatch{
-//			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
-//				return client.podInterface.List(lo)
-//			},
-//			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
-//				return client.podInterface.Watch(lo)
-//			},
-//		},
-//		&v1.Pod{},
-//		1*time.Minute,
-//		cache.ResourceEventHandlerFuncs{},
-//	)
-//	go podController.Run(wait.NeverStop)
-//	return podStore
-//}
+func (client *PodClient) CacheWatchPod() cache.Store {
+	podStore, podController := cache.NewInformer(
+		&cache.ListWatch{
+			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
+				return client.podInterface.List(lo)
+			},
+			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
+				return client.podInterface.Watch(lo)
+			},
+		},
+		&v1.Pod{},
+		time.Second * 10,
+		cache.ResourceEventHandlerFuncs{
+			AddFunc: func(obj interface{}) {
+				pod := obj.(*v1.Pod)
+				log.Infof("pod added: podName=%s, time is %s \n", pod.Name, time.Now())
+			},
+			UpdateFunc:func(oldObj, newObj interface{}) {
+				oldPod := oldObj.(*v1.Pod)
+				newPod := newObj.(*v1.Pod)
+				log.Infof("pod changed: oldPodName=%s, newPodName=%s, time is %s \n", oldPod.Name, newPod.Name,time.Now())
+			},
+			DeleteFunc: func(obj interface{}) {
+				pod := obj.(*v1.Pod)
+				log.Infof("pod deleted: podName=%s, time is %s \n", pod.Name, time.Now())
+			},
+		},
+	)
+	go podController.Run(wait.NeverStop)
+	return podStore
+}
