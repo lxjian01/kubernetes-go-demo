@@ -4,12 +4,8 @@ import (
 	"fmt"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/util/wait"
-	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
-	"k8s.io/client-go/tools/cache"
 	"time"
 )
 
@@ -23,31 +19,33 @@ func (client *PodClient) InitClient(clientset *kubernetes.Clientset) {
 	client.podInterface = pod
 }
 
-func (client *PodClient) GetPodList() (*v1.PodList,error){
-	podList,err := client.podInterface.List(metav1.ListOptions{})
+func (client *PodClient) CreatePod(pod *v1.Pod) (*v1.Pod,error){
+	pod,err := client.podInterface.Create(pod)
+	return pod,err
+}
+
+func (client *PodClient) UpdatePod(pod *v1.Pod) (*v1.Pod,error){
+	pod,err := client.podInterface.Update(pod)
+	return pod,err
+}
+
+func (client *PodClient) DeletePod(podName string,options *metav1.DeleteOptions) error{
+	err := client.podInterface.Delete(podName,options)
+	return err
+}
+
+func (client *PodClient) GetPod(podName string, options metav1.GetOptions) (*v1.Pod,error){
+	pod,err := client.podInterface.Get(podName,options)
+	return pod,err
+}
+
+func (client *PodClient) GetPodList(opts metav1.ListOptions) (*v1.PodList,error){
+	podList,err := client.podInterface.List(opts)
 	return podList,err
 }
 
-func (client *PodClient) WatchPod() cache.Store {
-	podStore, podController := cache.NewInformer(
-		&cache.ListWatch{
-			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
-				return client.podInterface.List(lo)
-			},
-			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
-				return client.podInterface.Watch(lo)
-			},
-		},
-		&v1.Pod{},
-		1*time.Minute,
-		cache.ResourceEventHandlerFuncs{},
-	)
-	go podController.Run(wait.NeverStop)
-	return podStore
-}
-
 //监听Pod变化
-func (client *PodClient) StartWatchPod() {
+func (client *PodClient) WatchPod() {
 	w, _ := client.podInterface.Watch(metav1.ListOptions{})
 	for {
 		select {
@@ -67,3 +65,21 @@ func (client *PodClient) StartWatchPod() {
 		}
 	}
 }
+
+//func (client *PodClient) WatchPod() cache.Store {
+//	podStore, podController := cache.NewInformer(
+//		&cache.ListWatch{
+//			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
+//				return client.podInterface.List(lo)
+//			},
+//			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
+//				return client.podInterface.Watch(lo)
+//			},
+//		},
+//		&v1.Pod{},
+//		1*time.Minute,
+//		cache.ResourceEventHandlerFuncs{},
+//	)
+//	go podController.Run(wait.NeverStop)
+//	return podStore
+//}
