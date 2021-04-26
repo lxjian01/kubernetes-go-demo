@@ -1,0 +1,8 @@
+version: "1.0.0"
+env: "dev"
+log:
+  dir: "/data/cmdb/logs"
+  name: "kubernetes-go-demo.log"
+  format: ""
+  retainDay: 3
+  Level: "INFO"

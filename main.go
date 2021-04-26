@@ -7,12 +7,25 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
+	"kubernetes-go-demo/config"
+	"kubernetes-go-demo/log"
 	utilsk8s "kubernetes-go-demo/utils/k8s"
+	"os"
 	"path/filepath"
 )
 
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println(r)
+			os.Exit(1)
+		}
+	}()
+	// init config
+	config.InitConfig()
+	log.Info("111111111111111111111")
+
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")
@@ -35,7 +48,7 @@ func main() {
 	serviceClient.InitServiceClient(clientset)
 	serviceList,err := serviceClient.GetServiceList(metav1.ListOptions{})
 	for _,item := range serviceList.Items{
-		fmt.Println(item.Name)
+		log.Infof("service name is %s \n",item.Name)
 	}
 
 	// deployment
@@ -43,7 +56,7 @@ func main() {
 	deploymentClient.InitDeploymentClient(clientset)
 	deploymentList,err := deploymentClient.GetDeploymentList(metav1.ListOptions{})
 	for _,item := range deploymentList.Items{
-		fmt.Println(item.Name)
+		log.Infof("deployment name is %s \n",item.Name)
 	}
 
 	// pod
@@ -51,7 +64,7 @@ func main() {
 	podClient.InitPodClient(clientset)
 	podList,err := podClient.GetPodList(metav1.ListOptions{})
 	for _,item := range podList.Items{
-		fmt.Println(item.Name)
+		log.Infof("pod name is %s \n",item.Name)
 	}
 }
 
