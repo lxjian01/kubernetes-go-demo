@@ -14,19 +14,19 @@ type PodClient struct {
 	podInterface corev1.PodInterface
 }
 
-func (client *PodClient) InitClient(clientset *kubernetes.Clientset) {
-	pod := clientset.CoreV1().Pods(client.Name)
-	client.podInterface = pod
+func (client *PodClient) InitPodClient(clientset *kubernetes.Clientset) {
+	podInterface := clientset.CoreV1().Pods(client.Name)
+	client.podInterface = podInterface
 }
 
 func (client *PodClient) CreatePod(pod *v1.Pod) (*v1.Pod,error){
-	pod,err := client.podInterface.Create(pod)
-	return pod,err
+	podInfo,err := client.podInterface.Create(pod)
+	return podInfo,err
 }
 
 func (client *PodClient) UpdatePod(pod *v1.Pod) (*v1.Pod,error){
-	pod,err := client.podInterface.Update(pod)
-	return pod,err
+	podInfo,err := client.podInterface.Update(pod)
+	return podInfo,err
 }
 
 func (client *PodClient) DeletePod(podName string,options *metav1.DeleteOptions) error{
@@ -35,8 +35,8 @@ func (client *PodClient) DeletePod(podName string,options *metav1.DeleteOptions)
 }
 
 func (client *PodClient) GetPod(podName string, options metav1.GetOptions) (*v1.Pod,error){
-	pod,err := client.podInterface.Get(podName,options)
-	return pod,err
+	podInfo,err := client.podInterface.Get(podName,options)
+	return podInfo,err
 }
 
 func (client *PodClient) GetPodList(opts metav1.ListOptions) (*v1.PodList,error){

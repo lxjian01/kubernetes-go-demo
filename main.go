@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
@@ -30,17 +31,14 @@ func main() {
 	}
 	deploymentsClient := clientset.AppsV1().Deployments("nginx-deployment")
 	fmt.Println(deploymentsClient)
+
+	// pod
 	podClient := utils.PodClient{Name: "default"}
-	podClient.InitClient(clientset)
-	podList,err := podClient.GetPodList()
+	podClient.InitPodClient(clientset)
+	podList,err := podClient.GetPodList(metav1.ListOptions{})
 	for _,item := range podList.Items{
 		fmt.Println(item.Name)
 	}
-
-	tt := podClient.WatchPod()
-	a := tt.ListKeys()
-	fmt.Println(a)
-	podClient.StartWatchPod()
 }
 
 
