@@ -35,11 +35,11 @@ func main() {
 	}
 	flag.Parse()
 
-	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
+	kubernetesConfig, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
 	if err != nil {
 		panic(err)
 	}
-	clientset, err := kubernetes.NewForConfig(config)
+	clientset, err := kubernetes.NewForConfig(kubernetesConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,14 @@ func main() {
 	// deployment
 	deploymentClient := utilsk8s.DeploymentClient{Name: "default"}
 	deploymentClient.InitDeploymentClient(clientset)
-	deploymentList,err := deploymentClient.GetDeploymentList(metav1.ListOptions{})
+	yamlFile := filepath.Join(config.GetConfig().YamlDir,"deployments/nginx-deployment.yaml")
+	nginxDeployment, err:= deploymentClient.CreateDeployment(yamlFile)
+	if err != nil {
+		log.Errorf("Create deployment error by %v \n", err)
+		return
+	}
+	log.Infof("Create deployment name is %s \n", nginxDeployment.Name)
+	deploymentList, err := deploymentClient.GetDeploymentList(metav1.ListOptions{})
 	for _,item := range deploymentList.Items{
 		log.Infof("deployment name is %s \n",item.Name)
 	}

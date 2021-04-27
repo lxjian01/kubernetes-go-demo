@@ -1,11 +1,14 @@
 package k8s
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
@@ -24,7 +27,24 @@ func (client *DeploymentClient) InitDeploymentClient(clientset *kubernetes.Clien
 	client.deploymentInterface = deploymentInterface
 }
 
-func (client *DeploymentClient) CreateDeployment(deployment *v1.Deployment) (*v1.Deployment,error){
+func (client *DeploymentClient) CreateDeployment(yamlFile string) (*v1.Deployment,error){
+	deploymentBytes,err := ioutil.ReadFile(yamlFile)
+	if err != nil {
+		log.Errorf("Read deployment file error by %v \n", err)
+		return nil, err
+	}
+	deployment := &v1.Deployment{}
+	deploymentJson,err := yaml.ToJSON(deploymentBytes)
+	if err != nil {
+		log.Errorf("Deployment bytes to json error by %v \n", err)
+		return nil, err
+	}
+	err = json.Unmarshal(deploymentJson,deployment)
+	if err != nil {
+		log.Errorf("Unmarshal deployment error by %v \n", err)
+		return nil, err
+	}
+	log.Infof("Starting create deployment %s \n", deployment.Name)
 	deploymentInfo,err := client.deploymentInterface.Create(deployment)
 	return deploymentInfo,err
 }

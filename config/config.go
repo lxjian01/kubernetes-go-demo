@@ -10,6 +10,7 @@ import (
 type AppConfig struct {
 	Version    string          `yaml:"version"`
 	Env        string          `yaml:"env"`
+	YamlDir   string      `yaml:"yamlDir"`
 	Log        *LogConfig       `yaml:"log"`
 }
 
