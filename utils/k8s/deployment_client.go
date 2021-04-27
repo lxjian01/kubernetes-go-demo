@@ -27,7 +27,7 @@ func (client *DeploymentClient) InitDeploymentClient(clientset *kubernetes.Clien
 	client.deploymentInterface = deploymentInterface
 }
 
-func (client *DeploymentClient) CreateDeployment(yamlFile string) (*v1.Deployment,error){
+func (client *DeploymentClient) getDeploymentByYamlFile(yamlFile string) (*v1.Deployment,error){
 	deploymentBytes,err := ioutil.ReadFile(yamlFile)
 	if err != nil {
 		log.Errorf("Read deployment file error by %v \n", err)
@@ -45,11 +45,17 @@ func (client *DeploymentClient) CreateDeployment(yamlFile string) (*v1.Deploymen
 		return nil, err
 	}
 	log.Infof("Starting create deployment %s \n", deployment.Name)
+	return deployment, nil
+}
+
+func (client *DeploymentClient) CreateDeployment(yamlFile string) (*v1.Deployment,error){
+	deployment,err := client.getDeploymentByYamlFile(yamlFile)
 	deploymentInfo,err := client.deploymentInterface.Create(deployment)
 	return deploymentInfo,err
 }
 
-func (client *DeploymentClient) UpdateDeployment(deployment *v1.Deployment) (*v1.Deployment,error){
+func (client *DeploymentClient) UpdateDeployment(yamlFile string) (*v1.Deployment,error){
+	deployment,err := client.getDeploymentByYamlFile(yamlFile)
 	deploymentInfo,err := client.deploymentInterface.Update(deployment)
 	return deploymentInfo,err
 }
