@@ -12,9 +12,15 @@ type AppConfig struct {
 	Env        string          `yaml:"env"`
 	YamlDir   string      `yaml:"yamlDir"`
 	PoolNum    int             `yaml:"poolNum"`
+	Httpd      HttpdConfig   `yaml:"httpd"`
 	Log        *LogConfig       `yaml:"log"`
 	Mysql   *MysqlConfig  `yaml:"mysql"`
 	Redis      *RedisConfig     `yaml:"redis"`
+}
+
+type HttpdConfig struct {
+	Host string
+	Port int
 }
 
 type LogConfig struct {

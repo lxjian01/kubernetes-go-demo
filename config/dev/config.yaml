@@ -2,6 +2,9 @@ version: "1.0.0"
 env: "dev"
 yamlDir: "/opt/code/kubernetes-yamls"
 poolNum: 100
+httpd:
+  host: "0.0.0.0"
+  port: 8018
 log:
   dir: "/data/cmdb/logs"
   name: "kubernetes-go-demo.log"
