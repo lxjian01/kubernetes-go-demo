@@ -7,6 +7,7 @@ import (
 	appConf "kubernetes-go-demo/config"
 	"kubernetes-go-demo/global/config"
 	"kubernetes-go-demo/global/gorm"
+	"kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	"kubernetes-go-demo/global/pools"
 	"kubernetes-go-demo/global/redis"
@@ -54,6 +55,10 @@ var httpdCmd = &cobra.Command{
 		redis.InitRedis(conf.Redis)
 		defer redis.CloseRedis()
 		log.Info("Init redis ok")
+
+		log.Info("Starting init kubernetes clientset")
+		k8s.InitClientset()
+		log.Info("Init kubernetes clientset ok")
 
 		// init gin server
 		log.Info("Starting init gin server")
