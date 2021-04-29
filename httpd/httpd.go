@@ -6,6 +6,7 @@ import (
 	"kubernetes-go-demo/global/log"
 	"kubernetes-go-demo/httpd/middlewares"
 	"kubernetes-go-demo/httpd/routers"
+	"kubernetes-go-demo/httpd/routers/kubernetes"
 	"net"
 	"strconv"
 )
@@ -17,6 +18,7 @@ func StartHttpdServer(conf *config.HttpdConfig) {
 	router.Use(middlewares.Auth(), gin.Recovery())
 	// 添加路由
 	routers.UserRoutes(router)      //Added all user routers
+	kubernetes.KubernetesServiceRoutes(router)      //Added all user routers
 	// 拼接host
 	Host := conf.Host
 	Port := strconv.Itoa(conf.Port)

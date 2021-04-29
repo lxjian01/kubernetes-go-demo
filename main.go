@@ -32,12 +32,7 @@ func main() {
 	//}
 	//
 	//// service
-	//serviceClient := utilsk8s.ServiceClient{Name: "default"}
-	//serviceClient.InitServiceClient(clientset)
-	//serviceList,err := serviceClient.GetServiceList(metav1.ListOptions{})
-	//for _,item := range serviceList.Items{
-	//	log.Infof("service name is %s \n",item.Name)
-	//}
+
 	//
 	//// deployment
 	//deploymentClient := utilsk8s.DeploymentClient{Name: "default"}
