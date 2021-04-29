@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	//初始化Cobra
+	// start httpd server
 	err := cmd.HttpdCmdExecute()
 	if err != nil {
 		fmt.Println("Start httpd server error by ",err)

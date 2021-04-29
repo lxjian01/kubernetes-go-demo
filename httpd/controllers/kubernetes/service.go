@@ -13,15 +13,15 @@ func GetServiceList(c *gin.Context){
 	clientset := k8s2.GetClientset()
 	serviceClient := k8s.ServiceClient{Name: "default"}
 	serviceClient.InitServiceClient(clientset)
-	ttt := make([]string,0)
 	serviceList,err := serviceClient.GetServiceList(metav1.ListOptions{})
 	if err != nil {
 		resp.ToMsgBadRequest(c, err.Error())
 		return
 	}
+	serviceNameList := make([]string,0)
 	for _,item := range serviceList.Items{
-		ttt = append(ttt, item.Name)
+		serviceNameList = append(serviceNameList, item.Name)
 	}
-	resp.Data = ttt
+	resp.Data = serviceNameList
 	resp.ToSuccess(c)
 }

@@ -5,9 +5,9 @@ import (
 	"kubernetes-go-demo/httpd/controllers/kubernetes"
 )
 
-func KubernetesServiceRoutes(route *gin.Engine) {
-	user := route.Group("/kubernetes/service")
+func ServiceRoutes(route *gin.Engine) {
+	service := route.Group("/kubernetes/service")
 	{
-		user.GET("/list", kubernetes.GetServiceList)
+		service.GET("/list", kubernetes.GetServiceList)
 	}
 }
