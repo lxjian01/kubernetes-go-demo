@@ -10,8 +10,7 @@ import (
 	"strconv"
 )
 
-func StartHttpdServer() {
-	conf := config.GetConfig().Httpd
+func StartHttpdServer(conf *config.HttpdConfig) {
 	router := gin.Default()
 	// 添加自定义的 logger 间件
 	router.Use(middlewares.Logger(), gin.Recovery())

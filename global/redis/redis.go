@@ -12,8 +12,7 @@ var (
 )
 
 // 初始化redis数据库
-func InitRedis() {
-	conf := config.GetConfig().Redis
+func InitRedis(conf *config.RedisConfig) {
 	var err error
 	redisPool = &redis.Pool{
 		MaxIdle:     conf.MaxIdle,

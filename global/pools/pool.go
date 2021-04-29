@@ -2,7 +2,6 @@ package pools
 
 import (
 	"github.com/panjf2000/ants/v2"
-	"kubernetes-go-demo/config"
 )
 
 var (
@@ -13,8 +12,7 @@ func Pool() *ants.Pool {
 	return pool
 }
 
-func InitPool() {
-	poolNum := config.GetConfig().PoolNum
+func InitPool(poolNum int) {
 	var err error
 	pool, err = ants.NewPool(poolNum)
 	if err != nil {

@@ -12,8 +12,7 @@ var (
 )
 
 // 初始化
-func InitDB() {
-	conf := config.GetConfig().Mysql
+func InitDB(conf *config.MysqlConfig) {
 	// dsn := "user:pass@tcp(ip:port)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", conf.User, conf.Password, conf.Host, conf.Port, conf.DbName)
 	ormDB, err := gorm.Open(mysql.New(mysql.Config{
@@ -37,13 +36,13 @@ func InitDB() {
 	sqlDb.SetMaxOpenConns(conf.MaxOpen) //设置最大的空闲连接数
 }
 
-func GetOrmDB() *gorm.DB {
-	conf := config.GetConfig()
-	if conf.Env != "prod" {
-		return ormDB.Debug()
-	}else{
-		return ormDB
-	}
-}
+//func GetOrmDB() *gorm.DB {
+//	conf := config.GetConfig()
+//	if conf.Env != "prod" {
+//		return ormDB.Debug()
+//	}else{
+//		return ormDB
+//	}
+//}
 
 

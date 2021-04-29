@@ -2,42 +2,17 @@ package main
 
 import (
 	"fmt"
-	"kubernetes-go-demo/config"
-	"kubernetes-go-demo/global/gorm"
-	"kubernetes-go-demo/global/log"
-	"kubernetes-go-demo/global/pools"
-	"kubernetes-go-demo/global/redis"
-	"kubernetes-go-demo/httpd"
+	"kubernetes-go-demo/cmd"
 	"os"
 )
 
-
 func main() {
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Println(r)
-			os.Exit(1)
-		}
-	}()
-	// init config
-	config.InitConfig()
-	log.Info("Init config ok")
-	// init db
-	gorm.InitDB()
-	log.Info("Init db ok")
-	// init redis pool
-	redis.InitRedis()
-	defer redis.CloseRedis()
-	log.Info("Init redis ok")
-	// init goroutine pool
-	pools.InitPool()
-	defer pools.ClosePool()
-	log.Info("Init goroutine pool ok")
-
-	// init gin server
-	httpd.StartHttpdServer()
-	log.Info("Start gin server ok")
-
+	//初始化Cobra
+	err := cmd.HttpdCmdExecute()
+	if err != nil {
+		fmt.Println("Start httpd server error by ",err)
+		os.Exit(1)
+	}
 
 	//var kubeconfig *string
 	//if home := homedir.HomeDir(); home != "" {
