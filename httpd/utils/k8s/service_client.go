@@ -7,9 +7,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apimachinery/pkg/watch"
-	"k8s.io/client-go/kubernetes"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/tools/cache"
+	k8s2 "kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	"time"
 )
@@ -19,9 +19,12 @@ type ServiceClient struct {
 	serviceInterface corev1.ServiceInterface
 }
 
-func (client *ServiceClient) InitServiceClient(clientset *kubernetes.Clientset) {
+func NewServiceClient(name string) *ServiceClient {
+	client := ServiceClient{Name: name}
+	clientset := k8s2.GetClientset()
 	serviceInterface := clientset.CoreV1().Services(client.Name)
 	client.serviceInterface = serviceInterface
+	return &client
 }
 
 func (client *ServiceClient) CreateService(service *v1.Service) (*v1.Service,error){

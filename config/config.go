@@ -45,6 +45,6 @@ type RedisConfig struct {
 
 type MachineryConfig struct {
 	Broker        string
-	ResultBackend        string
+	Backend        string
 	DefaultQueue    string
 }

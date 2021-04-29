@@ -2,39 +2,32 @@ package machinery
 
 import (
 	"github.com/RichardKnop/machinery/v2"
-	backendsiface "github.com/RichardKnop/machinery/v2/backends/iface"
-	brokersiface "github.com/RichardKnop/machinery/v2/brokers/iface"
-	machineryconfig "github.com/RichardKnop/machinery/v2/config"
-	locksiface "github.com/RichardKnop/machinery/v2/locks/iface"
-	"github.com/RichardKnop/machinery/v2/tasks"
-	appConfig "kubernetes-go-demo/config"
+	redisbackend "github.com/RichardKnop/machinery/v2/backends/redis"
+	redisbroker "github.com/RichardKnop/machinery/v2/brokers/redis"
+	"github.com/RichardKnop/machinery/v2/config"
+	eagerlock "github.com/RichardKnop/machinery/v2/locks/eager"
+	appconfig "kubernetes-go-demo/config"
 )
 
-func test(conf appConfig.MachineryConfig){
-	signature := &tasks.Signature{
-		Name: "add",
-		Args: []tasks.Arg{
-			{
-				Type:  "int64",
-				Value: 1,
-			},
-			{
-				Type:  "int64",
-				Value: 1,
-			},
+func NewServer(conf appconfig.MachineryConfig) *machinery.Server {
+	cnf := &config.Config{
+		DefaultQueue:    conf.DefaultQueue,
+		ResultsExpireIn: 3600,
+		Redis: &config.RedisConfig{
+			MaxIdle:                3,
+			IdleTimeout:            240,
+			ReadTimeout:            15,
+			WriteTimeout:           15,
+			ConnectTimeout:         15,
+			NormalTasksPollPeriod:  1000,
+			DelayedTasksPollPeriod: 500,
 		},
 	}
-	var broker brokersiface.Broker
-	var backend backendsiface.Backend
-	var lock locksiface.Lock
-	cnf := machineryconfig.Config{
-		Broker: conf.Broker,
-		DefaultQueue: conf.DefaultQueue,
-		ResultBackend: conf.ResultBackend,
-	}
-	server := machinery.NewServer(&cnf, broker, backend, lock)
-	err := server.RegisterPeriodicTask("0 6 * * ?", "periodic-task", signature)
-	if err != nil {
-		// failed to register periodic task
-	}
+
+	// Create server instance
+	broker := redisbroker.New(cnf, conf.Broker, "", "", 0)
+	backend := redisbackend.New(cnf, conf.Backend, "", "", 0)
+	lock := eagerlock.New()
+	server := machinery.NewServer(cnf, broker, backend, lock)
+	return server
 }

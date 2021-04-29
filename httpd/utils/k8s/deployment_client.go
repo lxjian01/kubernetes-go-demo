@@ -10,9 +10,9 @@ import (
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/apimachinery/pkg/watch"
-	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
 	"k8s.io/client-go/tools/cache"
+	k8s2 "kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	"time"
 )
@@ -22,9 +22,12 @@ type DeploymentClient struct {
 	deploymentInterface appsv1.DeploymentInterface
 }
 
-func (client *DeploymentClient) InitDeploymentClient(clientset *kubernetes.Clientset) {
+func NewDeploymentClient(name string) *DeploymentClient {
+	client := DeploymentClient{Name: name}
+	clientset := k8s2.GetClientset()
 	deploymentInterface := clientset.AppsV1().Deployments(client.Name)
 	client.deploymentInterface = deploymentInterface
+	return &client
 }
 
 func (client *DeploymentClient) getDeploymentByYamlFile(yamlFile string) (*v1.Deployment,error){

@@ -7,9 +7,9 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/apimachinery/pkg/watch"
-	"k8s.io/client-go/kubernetes"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/tools/cache"
+	k8s2 "kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	"time"
 )
@@ -19,9 +19,12 @@ type PodClient struct {
 	podInterface corev1.PodInterface
 }
 
-func (client *PodClient) InitPodClient(clientset *kubernetes.Clientset) {
+func NewPodClient(name string) *PodClient {
+	client := PodClient{Name: name}
+	clientset := k8s2.GetClientset()
 	podInterface := clientset.CoreV1().Pods(client.Name)
 	client.podInterface = podInterface
+	return &client
 }
 
 func (client *PodClient) CreatePod(pod *v1.Pod) (*v1.Pod,error){
