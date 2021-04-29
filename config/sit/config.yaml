@@ -1,9 +1,0 @@
-version: "1.0.0"
-env: "dev"
-yamlDir: "/opt/code/kubernetes-yamls"
-log:
-  dir: "/data/cmdb/logs"
-  name: "kubernetes-go-demo.log"
-  format: ""
-  retainDay: 3
-  Level: "INFO"

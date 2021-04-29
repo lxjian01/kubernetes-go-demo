@@ -10,7 +10,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/tools/cache"
-	"kubernetes-go-demo/log"
+	"kubernetes-go-demo/global/log"
 	"time"
 )
 

@@ -1,9 +1,24 @@
 version: "1.0.0"
 env: "dev"
 yamlDir: "/opt/code/kubernetes-yamls"
+poolNum: 100
 log:
   dir: "/data/cmdb/logs"
   name: "kubernetes-go-demo.log"
   format: ""
   retainDay: 3
   Level: "INFO"
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  dbName: "kubernetes-demo"
+  user: "root"
+  password: "123456"
+  maxConn: 30
+  maxOpen: 30
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  maxIdle: 3
+  maxActive: 5
+  idleTimeout: 60

@@ -8,7 +8,10 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 	"kubernetes-go-demo/config"
-	"kubernetes-go-demo/log"
+	"kubernetes-go-demo/global/gorm"
+	"kubernetes-go-demo/global/log"
+	"kubernetes-go-demo/global/pools"
+	"kubernetes-go-demo/global/redis"
 	utilsk8s "kubernetes-go-demo/utils/k8s"
 	"os"
 	"path/filepath"
@@ -25,8 +28,18 @@ func main() {
 	}()
 	// init config
 	config.InitConfig()
-	log.Info("111111111111111111111")
-
+	log.Info("Init config ok")
+	// init db
+	gorm.InitDB()
+	log.Info("Init db ok")
+	// init redis pool
+	redis.InitRedis()
+	defer redis.CloseRedis()
+	log.Info("Init redis ok")
+	// init goroutine pool
+	pools.InitPool()
+	defer pools.ClosePool()
+	log.Info("Init goroutine pool ok")
 	var kubeconfig *string
 	if home := homedir.HomeDir(); home != "" {
 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "config"), "(optional) absolute path to the kubeconfig file")

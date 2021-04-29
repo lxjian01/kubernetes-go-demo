@@ -11,7 +11,10 @@ type AppConfig struct {
 	Version    string          `yaml:"version"`
 	Env        string          `yaml:"env"`
 	YamlDir   string      `yaml:"yamlDir"`
+	PoolNum    int             `yaml:"poolNum"`
 	Log        *LogConfig       `yaml:"log"`
+	Mysql   *MysqlConfig  `yaml:"mysql"`
+	Redis      *RedisConfig     `yaml:"redis"`
 }
 
 type LogConfig struct {
@@ -22,6 +25,25 @@ type LogConfig struct {
 	Level     string
 }
 
+type MysqlConfig struct {
+	Host        string
+	Port        int
+	DbName      string
+	User        string
+	Password    string
+	MaxConn int
+	MaxOpen int
+}
+
+type RedisConfig struct {
+	Host        string
+	Port        int
+	Password    string
+	MaxIdle     int
+	MaxActive   int
+	IdleTimeout int
+}
+
 var (
 	config *AppConfig
 )
@@ -29,7 +51,10 @@ var (
 //通过viper初始化配置文件到结构体
 func InitConfig() {
 	dir,_ := os.Getwd()
-	env := os.Getenv("CMDB_ENV")
+	env := os.Getenv("ENV")
+	if env == ""{
+		env = "dev"
+	}
 	configPath := filepath.Join(dir,"config/"+env)
 	// 设置读取的文件路径
 	viper.AddConfigPath(configPath)
