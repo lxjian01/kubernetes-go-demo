@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"kubernetes-go-demo/config"
+	appConf "kubernetes-go-demo/config"
+	"kubernetes-go-demo/global/config"
 	"kubernetes-go-demo/global/gorm"
 	"kubernetes-go-demo/global/log"
 	"kubernetes-go-demo/global/pools"
@@ -14,22 +15,15 @@ import (
 	"path/filepath"
 )
 
-var (
-	daemon bool
-	appConf config.AppConfig
-	lockfile = "/var/run/jumpserver.pid"
-)
-
 //Execute方法触发init方法
 func init() {
 	//初始化配置文件转化成对应的结构体
 	cobra.OnInitialize(initConfig)
-	httpdCmd.AddCommand(versionCmd)
+	httpdCmd.AddCommand(httpdVersionCmd)
 }
 
-//项目启动调用的入口方法
+// gin server启动调用的入口方法
 func HttpdCmdExecute() error{
-	//初始化Cobra
 	err := httpdCmd.Execute()
 	return err
 }
@@ -37,6 +31,7 @@ func HttpdCmdExecute() error{
 var httpdCmd = &cobra.Command{
 	Use:   "httpd",
 	Run: func(cmd *cobra.Command, args []string) {
+		conf := config.GetConfig()
 		defer func() {
 			if r := recover(); r != nil {
 				fmt.Println("Start http server error by ", r)
@@ -44,34 +39,35 @@ var httpdCmd = &cobra.Command{
 			}
 		}()
 		fmt.Println("Starting init system log")
-		log.Init(appConf.Log)
+		log.Init(conf.Log)
 		fmt.Println("Init system log ok")
 
 		log.Info("Starting init pool")
-		pools.InitPool(appConf.PoolNum)
+		pools.InitPool(conf.PoolNum)
 		log.Info("Init pool ok")
 
 		log.Info("Starting init mysql")
-		gorm.InitDB(appConf.Mysql)
+		gorm.InitDB(conf.Mysql)
 		log.Info("Init mysql ok")
 
 		log.Info("Starting init redis")
-		redis.InitRedis(appConf.Redis)
+		redis.InitRedis(conf.Redis)
 		defer redis.CloseRedis()
 		log.Info("Init redis ok")
 
 		// init gin server
 		log.Info("Starting init gin server")
-		httpd.StartHttpdServer(appConf.Httpd)
+		httpd.StartHttpdServer(conf.Httpd)
 		log.Info("Start gin server ok")
 	},
 }
 
-var versionCmd = &cobra.Command{
+var httpdVersionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Show jumpserver version",
+	Short: "Show httpd version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Jumpserver version is",appConf.Version)
+		conf := config.GetConfig()
+		fmt.Println("Httpd version is",conf.Version)
 		os.Exit(0)
 	},
 }
@@ -93,7 +89,9 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		panic(fmt.Sprintf("Read config error by %v \n",err))
 	}
+	var appConf appConf.Config
 	if err :=viper.Unmarshal(&appConf); err !=nil{
 		panic(fmt.Sprintf("Unmarshal config error by %v \n",err))
 	}
+	config.SetConfig(&appConf)
 }

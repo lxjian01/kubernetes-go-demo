@@ -1,6 +1,6 @@
 package config
 
-type AppConfig struct {
+type Config struct {
 	Version    string          `yaml:"version"`
 	Env        string          `yaml:"env"`
 	YamlDir   string      `yaml:"yamlDir"`
