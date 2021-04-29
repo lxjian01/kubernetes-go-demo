@@ -17,9 +17,10 @@ func StartHttpdServer(conf *config.HttpdConfig) {
 	router.Use(middlewares.Logger(), gin.Recovery())
 	router.Use(middlewares.Auth(), gin.Recovery())
 	// 添加路由
-	routers.UserRoutes(router)      //Added all user routers
-	kubernetes.ServiceRoutes(router)      //Added all user routers
-	kubernetes.DeploymentRoutes(router)      //Added all user routers
+	routers.UserRoutes(router)      //Added user routers
+	kubernetes.ServiceRoutes(router)      //Added kubernetes service routers
+	kubernetes.DeploymentRoutes(router)      //Added kubernetes deployment routers
+	kubernetes.PodRoutes(router)      //Added kubernetes pod routers
 	// 拼接host
 	Host := conf.Host
 	Port := strconv.Itoa(conf.Port)
