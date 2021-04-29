@@ -16,23 +16,19 @@ import (
 	"path/filepath"
 )
 
-//Execute方法触发init方法
+// Execute方法触发init方法
 func init() {
-	//初始化配置文件转化成对应的结构体
+	// 初始化配置文件转化成对应的结构体
 	cobra.OnInitialize(initConfig)
-	httpdCmd.AddCommand(httpdVersionCmd)
+	// add machinery cmd
+	rootCmd.AddCommand(machineryCmd)
 }
 
-// gin server启动调用的入口方法
-func HttpdCmdExecute() error{
-	err := httpdCmd.Execute()
-	return err
-}
-
-var httpdCmd = &cobra.Command{
-	Use:   "httpd",
+// 定义根命令
+var rootCmd = &cobra.Command{
+	Use: "kubernetes-go-demo",
 	Run: func(cmd *cobra.Command, args []string) {
-		conf := config.GetConfig()
+		conf := config.GetAppConfig()
 		defer func() {
 			if r := recover(); r != nil {
 				fmt.Println("Start http server error by ", r)
@@ -67,13 +63,24 @@ var httpdCmd = &cobra.Command{
 	},
 }
 
-var httpdVersionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Show httpd version",
+// gin server启动调用的入口方法
+func RootCmdExecute() error{
+	err := rootCmd.Execute()
+	return err
+}
+
+
+var machineryCmd = &cobra.Command{
+	Use:   "machinery",
 	Run: func(cmd *cobra.Command, args []string) {
-		conf := config.GetConfig()
-		fmt.Println("Httpd version is",conf.Version)
-		os.Exit(0)
+		//conf := config.GetAppConfig()
+		//defer func() {
+		//	if r := recover(); r != nil {
+		//		fmt.Println("Start http server error by ", r)
+		//		os.Exit(1)
+		//	}
+		//}()
+
 	},
 }
 
@@ -94,9 +101,9 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		panic(fmt.Sprintf("Read config error by %v \n",err))
 	}
-	var appConf appConf.Config
+	var appConf appConf.AppConfig
 	if err :=viper.Unmarshal(&appConf); err !=nil{
 		panic(fmt.Sprintf("Unmarshal config error by %v \n",err))
 	}
-	config.SetConfig(&appConf)
+	config.SetAppConfig(&appConf)
 }

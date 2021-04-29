@@ -25,3 +25,7 @@ redis:
   maxIdle: 3
   maxActive: 5
   idleTimeout: 60
+machinery:
+  broker: redis://127.0.0.1:6379
+  resultBackend: redis://127.0.0.1:6379
+  defaultQueue: "asong"

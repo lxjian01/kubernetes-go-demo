@@ -2,12 +2,12 @@ package config
 
 import "kubernetes-go-demo/config"
 
-var conf *config.Config
+var conf *config.AppConfig
 
-func SetConfig(c *config.Config){
+func SetAppConfig(c *config.AppConfig){
 	conf = c
 }
 
-func GetConfig() *config.Config {
+func GetAppConfig() *config.AppConfig {
 	return conf
 }

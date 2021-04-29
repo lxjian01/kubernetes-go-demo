@@ -1,6 +1,6 @@
 package config
 
-type Config struct {
+type AppConfig struct {
 	Version    string          `yaml:"version"`
 	Env        string          `yaml:"env"`
 	YamlDir   string      `yaml:"yamlDir"`
@@ -41,4 +41,10 @@ type RedisConfig struct {
 	MaxIdle     int
 	MaxActive   int
 	IdleTimeout int
+}
+
+type MachineryConfig struct {
+	Broker        string
+	ResultBackend        string
+	DefaultQueue    string
 }

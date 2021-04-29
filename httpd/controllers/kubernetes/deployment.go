@@ -15,7 +15,7 @@ func CreateDeploymentList(c *gin.Context){
 	clientset := k8s2.GetClientset()
 	deploymentClient := k8s.DeploymentClient{Name: "default"}
 	deploymentClient.InitDeploymentClient(clientset)
-	yamlFile := filepath.Join(config.GetConfig().YamlDir,"deployments/nginx-deployment.yaml")
+	yamlFile := filepath.Join(config.GetAppConfig().YamlDir,"deployments/nginx-deployment.yaml")
 	deployment, err:= deploymentClient.CreateDeployment(yamlFile)
 	if err != nil {
 		resp.ToMsgBadRequest(c, err.Error())
