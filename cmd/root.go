@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	appConf "kubernetes-go-demo/config"
-	"kubernetes-go-demo/global/config"
+	globalConf "kubernetes-go-demo/global/config"
 	"kubernetes-go-demo/global/gorm"
 	"kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
@@ -17,23 +17,11 @@ import (
 	"path/filepath"
 )
 
-// Execute方法触发init方法
-func init() {
-	// 初始化配置文件转化成对应的结构体
-	cobra.OnInitialize(initConfig)
-}
-
-// 启动调用的入口方法
-func Execute() error{
-	err := rootCmd.Execute()
-	return err
-}
-
 // 定义根命令
 var rootCmd = &cobra.Command{
 	Use: "kubernetes-demo-go",
 	Run: func(cmd *cobra.Command, args []string) {
-		conf := config.GetAppConfig()
+		conf := globalConf.GetAppConfig()
 		defer func() {
 			if r := recover(); r != nil {
 				fmt.Println("Start http server error by ", r)
@@ -70,6 +58,20 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+// Execute方法触发init方法
+func init() {
+	// 初始化配置文件转化成对应的结构体
+	cobra.OnInitialize(initConfig)
+}
+
+// 启动调用的入口方法
+func Execute() {
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
 //通过viper初始化配置文件到结构体
 func initConfig() {
 	dir,_ := os.Getwd()
@@ -91,5 +93,5 @@ func initConfig() {
 	if err :=viper.Unmarshal(&appConf); err !=nil{
 		panic(fmt.Sprintf("Unmarshal config error by %v \n",err))
 	}
-	config.SetAppConfig(&appConf)
+	globalConf.SetAppConfig(&appConf)
 }
