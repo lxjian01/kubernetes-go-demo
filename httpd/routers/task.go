@@ -10,6 +10,7 @@ func TaskRoutes(route *gin.Engine) {
 	{
 		task.GET("/send_task", controllers.SendTask)
 		task.GET("/delayed_task", controllers.DelayedTask)
+		task.GET("/periodic_task", controllers.PeriodicTask)
 		task.GET("/list", controllers.GetTaskList)
 		//user.POST("/test", controllers.Test)
 	}

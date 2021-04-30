@@ -6,6 +6,7 @@ require (
 	github.com/RichardKnop/machinery/v2 v2.0.10
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gin-gonic/gin v1.7.1
+	github.com/go-bindata/go-bindata v1.0.0 // indirect
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-playground/validator/v10 v10.4.1

@@ -31,11 +31,13 @@ var machineryWorkerCmd = &cobra.Command{
 		globalMachinery.RegistryTasks()
 		log.Info("Registry machinery tasks ok")
 
+		log.Info("Starting registry machinery periodic tasks")
+		globalMachinery.RegisterPeriodicTask()
+		log.Info("Registry machinery periodic tasks ok")
+
 		log.Info("Starting machinery worker")
 		globalMachinery.StartWorker()
 		log.Info("Machinery worker start ok")
-
-		globalMachinery.RegisterScheduledTask()
 
 	},
 }

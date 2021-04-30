@@ -2,11 +2,11 @@ package machinery
 
 import (
 	"github.com/RichardKnop/machinery/v2"
-	"github.com/RichardKnop/machinery/v2/tasks"
 	redisbackend "github.com/RichardKnop/machinery/v2/backends/redis"
 	redisbroker "github.com/RichardKnop/machinery/v2/brokers/redis"
 	"github.com/RichardKnop/machinery/v2/config"
 	eagerlock "github.com/RichardKnop/machinery/v2/locks/eager"
+	"github.com/RichardKnop/machinery/v2/tasks"
 	appconfig "kubernetes-go-demo/config"
 	mytask "kubernetes-go-demo/tasks"
 )
@@ -54,14 +54,14 @@ func RegistryTasks(){
 	}
 }
 
-func RegisterScheduledTask(){
+func RegisterPeriodicTask(){
 	// Register tasks
 	signature := &tasks.Signature{
-		Name: "Multiply",
+		Name: "multiply",
 		Args: []tasks.Arg{
 			{
 				Type:  "int64",
-				Value: 2,
+				Value: 3,
 			},
 			{
 				Type:  "int64",
@@ -69,7 +69,9 @@ func RegisterScheduledTask(){
 			},
 		},
 	}
-	err := server.RegisterPeriodicTask("0/2 * * * * ?", "periodic-task", signature)
+
+	// every minute
+	err := server.RegisterPeriodicTask("*/1 * * * ?", "periodic-task", signature)
 	if err != nil {
 		panic(err)
 	}
