@@ -27,7 +27,7 @@ var machineryWorkerCmd = &cobra.Command{
 		globalMachinery.InitServer(conf.Machinery)
 		log.Info("Init machinery server ok")
 
-		workers := globalMachinery.GetServer().NewWorker("worker_test", 10)
+		workers := globalMachinery.GetServer().NewWorker("kubernetes-go-demo_worker", 10)
 		err := workers.Launch()
 		if err != nil {
 			panic(err)
