@@ -9,6 +9,7 @@ import (
 	"kubernetes-go-demo/global/gorm"
 	"kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
+	mymachinery "kubernetes-go-demo/global/machinery"
 	"kubernetes-go-demo/global/pools"
 	"kubernetes-go-demo/global/redis"
 	"kubernetes-go-demo/httpd"
@@ -20,13 +21,17 @@ import (
 func init() {
 	// 初始化配置文件转化成对应的结构体
 	cobra.OnInitialize(initConfig)
-	// add machinery cmd
-	rootCmd.AddCommand(machineryCmd)
+}
+
+// 启动调用的入口方法
+func Execute() error{
+	err := rootCmd.Execute()
+	return err
 }
 
 // 定义根命令
 var rootCmd = &cobra.Command{
-	Use: "kubernetes-go-demo",
+	Use: "kubernetes-demo-go",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetAppConfig()
 		defer func() {
@@ -56,31 +61,12 @@ var rootCmd = &cobra.Command{
 		k8s.InitClientset()
 		log.Info("Init kubernetes clientset ok")
 
+		mymachinery.InitServer(conf.Machinery)
+
 		// init gin server
 		log.Info("Starting init gin server")
 		httpd.StartHttpdServer(conf.Httpd)
 		log.Info("Start gin server ok")
-	},
-}
-
-// gin server启动调用的入口方法
-func RootCmdExecute() error{
-	err := rootCmd.Execute()
-	return err
-}
-
-
-var machineryCmd = &cobra.Command{
-	Use:   "machinery",
-	Run: func(cmd *cobra.Command, args []string) {
-		//conf := config.GetAppConfig()
-		//defer func() {
-		//	if r := recover(); r != nil {
-		//		fmt.Println("Start http server error by ", r)
-		//		os.Exit(1)
-		//	}
-		//}()
-
 	},
 }
 

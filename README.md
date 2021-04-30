@@ -4,3 +4,7 @@
     
 # Distributed scheduling framework machinery, like python celery
     github.com/RichardKnop/machinery/v2
+   
+# start gin server
+    cd /opt/code/kubernetes-go-demo
+    go run main.go kubernetes-demo-go

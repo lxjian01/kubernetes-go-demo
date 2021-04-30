@@ -9,7 +9,9 @@ import (
 	appconfig "kubernetes-go-demo/config"
 )
 
-func NewServer(conf appconfig.MachineryConfig) *machinery.Server {
+var server *machinery.Server
+
+func InitServer(conf *appconfig.MachineryConfig) {
 	cnf := &config.Config{
 		DefaultQueue:    conf.DefaultQueue,
 		ResultsExpireIn: 3600,
@@ -28,6 +30,9 @@ func NewServer(conf appconfig.MachineryConfig) *machinery.Server {
 	broker := redisbroker.New(cnf, conf.Broker, "", "", 0)
 	backend := redisbackend.New(cnf, conf.Backend, "", "", 0)
 	lock := eagerlock.New()
-	server := machinery.NewServer(cnf, broker, backend, lock)
+	server = machinery.NewServer(cnf, broker, backend, lock)
+}
+
+func GetServer() *machinery.Server {
 	return server
 }

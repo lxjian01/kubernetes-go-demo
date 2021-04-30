@@ -7,12 +7,10 @@ import (
 )
 
 func main() {
-
-
-	// start httpd server
-	err1 := cmd.RootCmdExecute()
+	// start server
+	err1 := cmd.Execute()
 	if err1 != nil {
-		fmt.Println("Start httpd server error by ",err1)
+		fmt.Println("Start server error by ",err1)
 		os.Exit(1)
 	}
 }

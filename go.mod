@@ -3,7 +3,7 @@ module kubernetes-go-demo
 go 1.15
 
 require (
-	github.com/RichardKnop/machinery/v2 v2.0.10 // indirect
+	github.com/RichardKnop/machinery/v2 v2.0.10
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/gin-gonic/gin v1.7.1
 	github.com/go-playground/locales v0.13.0

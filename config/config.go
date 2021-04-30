@@ -9,6 +9,7 @@ type AppConfig struct {
 	Log        *LogConfig       `yaml:"log"`
 	Mysql   *MysqlConfig  `yaml:"mysql"`
 	Redis      *RedisConfig     `yaml:"redis"`
+	Machinery      *MachineryConfig     `yaml:"machinery"`
 }
 
 type HttpdConfig struct {
