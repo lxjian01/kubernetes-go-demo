@@ -2,12 +2,13 @@ package machinery
 
 import (
 	"github.com/RichardKnop/machinery/v2"
+	"github.com/RichardKnop/machinery/v2/tasks"
 	redisbackend "github.com/RichardKnop/machinery/v2/backends/redis"
 	redisbroker "github.com/RichardKnop/machinery/v2/brokers/redis"
 	"github.com/RichardKnop/machinery/v2/config"
 	eagerlock "github.com/RichardKnop/machinery/v2/locks/eager"
 	appconfig "kubernetes-go-demo/config"
-	"kubernetes-go-demo/tasks"
+	mytask "kubernetes-go-demo/tasks"
 )
 
 var server *machinery.Server
@@ -39,19 +40,41 @@ func InitServer(conf *appconfig.MachineryConfig) {
 func RegistryTasks(){
 	// Register tasks
 	tasksList := map[string]interface{}{
-		"add":                   tasks.Add,
-		"multiply":              tasks.Multiply,
-		"sum_ints":              tasks.SumInts,
-		"sum_floats":            tasks.SumFloats,
-		"concat":                tasks.Concat,
-		"split":                 tasks.Split,
-		"panic_task":            tasks.PanicTask,
+		"add":                   mytask.Add,
+		"multiply":              mytask.Multiply,
+		"sum_ints":              mytask.SumInts,
+		"sum_floats":            mytask.SumFloats,
+		"concat":                mytask.Concat,
+		"split":                 mytask.Split,
+		"panic_task":            mytask.PanicTask,
 	}
 	err := server.RegisterTasks(tasksList)
 	if err != nil {
 		panic(err)
 	}
 }
+
+func RegisterScheduledTask(){
+	// Register tasks
+	signature := &tasks.Signature{
+		Name: "Multiply",
+		Args: []tasks.Arg{
+			{
+				Type:  "int64",
+				Value: 2,
+			},
+			{
+				Type:  "int64",
+				Value: 3,
+			},
+		},
+	}
+	err := server.RegisterPeriodicTask("0/2 * * * * ?", "periodic-task", signature)
+	if err != nil {
+		panic(err)
+	}
+}
+
 
 func StartWorker(){
 	workers := server.NewWorker("machinery_tasks", 10)

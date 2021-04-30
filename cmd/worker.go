@@ -35,5 +35,7 @@ var machineryWorkerCmd = &cobra.Command{
 		globalMachinery.StartWorker()
 		log.Info("Machinery worker start ok")
 
+		globalMachinery.RegisterScheduledTask()
+
 	},
 }

@@ -12,7 +12,7 @@ log:
   retainDay: 3
   Level: "INFO"
 mysql:
-  host: "127.0.0.1"
+  host: "192.168.219.128"
   port: 3306
   dbName: "kubernetes-demo"
   user: "root"
@@ -20,12 +20,12 @@ mysql:
   maxConn: 30
   maxOpen: 30
 redis:
-  host: "127.0.0.1"
+  host: "192.168.219.128"
   port: 6379
   maxIdle: 3
   maxActive: 5
   idleTimeout: 60
 machinery:
-  broker: 127.0.0.1:6379
-  backend: 127.0.0.1:6379
+  broker: 192.168.219.128:6379
+  backend: 192.168.219.128:6379
   defaultQueue: "machinery_tasks"
