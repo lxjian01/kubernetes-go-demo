@@ -2,11 +2,8 @@ package tasks
 
 import (
 	"errors"
-	"fmt"
-	"github.com/RichardKnop/machinery/v2/log"
-	mylog "kubernetes-go-demo/global/log"
+	"kubernetes-go-demo/global/log"
 	"strings"
-	"time"
 )
 
 // Add ...
@@ -15,8 +12,7 @@ func Add(args ...int64) (int64, error) {
 	for _, arg := range args {
 		sum += arg
 	}
-	fmt.Println(sum)
-	mylog.Info(sum)
+	log.Info("tttttttttttttttttttt %d ", sum)
 	return sum, nil
 }
 
@@ -64,15 +60,4 @@ func Split(str string) ([]string, error) {
 // PanicTask ...
 func PanicTask() (string, error) {
 	panic(errors.New("oops"))
-}
-
-// LongRunningTask ...
-func LongRunningTask() error {
-	log.INFO.Print("Long running task started")
-	for i := 0; i < 10; i++ {
-		log.INFO.Print(10 - i)
-		time.Sleep(1 * time.Second)
-	}
-	log.INFO.Print("Long running task finished")
-	return nil
 }

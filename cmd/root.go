@@ -9,7 +9,7 @@ import (
 	"kubernetes-go-demo/global/gorm"
 	"kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
-	mymachinery "kubernetes-go-demo/global/machinery"
+	globalMachinery "kubernetes-go-demo/global/machinery"
 	"kubernetes-go-demo/global/pools"
 	"kubernetes-go-demo/global/redis"
 	"kubernetes-go-demo/httpd"
@@ -49,7 +49,13 @@ var rootCmd = &cobra.Command{
 		k8s.InitClientset()
 		log.Info("Init kubernetes clientset ok")
 
-		mymachinery.InitServer(conf.Machinery)
+		log.Info("Starting init machinery server")
+		globalMachinery.InitServer(conf.Machinery)
+		log.Info("Init machinery server ok")
+
+		log.Info("Starting registry tasks")
+		globalMachinery.RegistryTasks()
+		log.Info("Registry machinery tasks ok")
 
 		// init gin server
 		log.Info("Starting init gin server")

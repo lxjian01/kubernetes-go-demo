@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	globalConf "kubernetes-go-demo/global/config"
 	"github.com/spf13/cobra"
+	globalConf "kubernetes-go-demo/global/config"
 )
 
 func init() {
