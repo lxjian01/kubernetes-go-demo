@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"kubernetes-go-demo/global/log"
 	"kubernetes-go-demo/global/machinery"
-	"net/http"
 )
 
 func GetUserList(c *gin.Context){
@@ -30,10 +29,9 @@ func GetUserList(c *gin.Context){
 
 	asyncResult, err := machinery.GetServer().SendTask(signature)
 	if err != nil {
-		panic(err)
+		log.Error("Machinery send task add error by ", err)
+		c.JSON(400, gin.H{"add": err, "uuid": uid, "result": asyncResult})
+		return
 	}
-	c.JSON(200, gin.H{"add": err, "uuid": uid})
-	log.Info(asyncResult)
-
-	c.String(http.StatusOK, "Hello %s", "name")
+	c.JSON(200, gin.H{"add": err, "uuid": uid, "result": asyncResult})
 }

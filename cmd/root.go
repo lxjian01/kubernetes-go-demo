@@ -53,10 +53,6 @@ var rootCmd = &cobra.Command{
 		globalMachinery.InitServer(conf.Machinery)
 		log.Info("Init machinery server ok")
 
-		log.Info("Starting registry tasks")
-		globalMachinery.RegistryTasks()
-		log.Info("Registry machinery tasks ok")
-
 		// init gin server
 		log.Info("Starting init gin server")
 		httpd.StartHttpdServer(conf.Httpd)

@@ -14,7 +14,9 @@ var server *machinery.Server
 
 func InitServer(conf *appconfig.MachineryConfig) {
 	cnf := &config.Config{
+		Broker: conf.Broker,
 		DefaultQueue:    conf.DefaultQueue,
+		ResultBackend: conf.Backend,
 		ResultsExpireIn: 3600,
 		Redis: &config.RedisConfig{
 			MaxIdle:                3,
@@ -46,6 +48,14 @@ func RegistryTasks(){
 		"panic_task":            tasks.PanicTask,
 	}
 	err := server.RegisterTasks(tasksList)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func StartWorker(){
+	workers := server.NewWorker("machinery_tasks", 10)
+	err := workers.Launch()
 	if err != nil {
 		panic(err)
 	}

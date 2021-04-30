@@ -27,10 +27,13 @@ var machineryWorkerCmd = &cobra.Command{
 		globalMachinery.InitServer(conf.Machinery)
 		log.Info("Init machinery server ok")
 
-		workers := globalMachinery.GetServer().NewWorker("kubernetes-go-demo_worker", 10)
-		err := workers.Launch()
-		if err != nil {
-			panic(err)
-		}
+		log.Info("Starting registry machinery tasks")
+		globalMachinery.RegistryTasks()
+		log.Info("Registry machinery tasks ok")
+
+		log.Info("Starting machinery worker")
+		globalMachinery.StartWorker()
+		log.Info("Machinery worker start ok")
+
 	},
 }
