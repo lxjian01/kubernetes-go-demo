@@ -59,6 +59,7 @@ func SendTask(c *gin.Context){
 
 func PeriodicTask(c *gin.Context){
 	signature := &tasks.Signature{
+		UUID: "22222222222",
 		Name: "multiply",
 		Args: []tasks.Arg{
 			{
@@ -72,7 +73,7 @@ func PeriodicTask(c *gin.Context){
 		},
 	}
 
-	err := machinery.GetServer().RegisterPeriodicTask("*/5 * * * * ?", "periodic-task", signature)
+	err := machinery.GetServer().RegisterPeriodicTask("*/1 * * * ?", "periodic-task", signature)
 	if err != nil {
 		log.Error("Machinery send task add error by ", err)
 		c.JSON(400, gin.H{"error": err})

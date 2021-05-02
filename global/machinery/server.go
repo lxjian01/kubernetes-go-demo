@@ -57,6 +57,7 @@ func RegistryTasks(){
 func RegisterPeriodicTask(){
 	// Register tasks
 	signature := &tasks.Signature{
+		UUID: "11111111",
 		Name: "multiply",
 		Args: []tasks.Arg{
 			{
@@ -69,14 +70,12 @@ func RegisterPeriodicTask(){
 			},
 		},
 	}
-
 	// every minute
 	err := server.RegisterPeriodicTask("*/1 * * * ?", "periodic-task", signature)
 	if err != nil {
 		panic(err)
 	}
 }
-
 
 func StartWorker(){
 	workers := server.NewWorker("machinery_tasks", 10)
