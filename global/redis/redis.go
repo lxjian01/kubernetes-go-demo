@@ -83,18 +83,19 @@ func Deserialization(byt []byte, ptr interface{}) (err error) {
 // string 类型 添加, v 可以是任意类型
 func StringSet(name string, v interface{}) error {
 	conn := redisPool.Get()
-
+	s, _ := Serialization(v) // 序列化
 	defer conn.Close()
-	_, err := conn.Do("SET", name, v)
+	_, err := conn.Do("SET", name, s)
 	return err
 }
 
 // 获取 字符串类型的值
-func StringGet(name string) (interface{},error) {
+func StringGet(name string, v interface{}) error {
 	conn := redisPool.Get()
 	defer conn.Close()
-	temp, err := conn.Do("Get", name)
-	return temp,err
+	temp, _ := redis.Bytes(conn.Do("Get", name))
+	err := Deserialization(temp, &v) // 反序列化
+	return err
 }
 
 func CloseRedis(){
