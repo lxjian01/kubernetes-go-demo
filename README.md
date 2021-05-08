@@ -7,5 +7,6 @@
    
 # start gin server
     cd /opt/code/kubernetes-go-demo
-    go run main.go  # run gin server
-    go run main.go version # see kubernetes-go-demo version
+    go run main.go   # run gin server
+    go run main.go version  # see kubernetes-go-demo version
+    go run main.go worker  # run machinery worker
