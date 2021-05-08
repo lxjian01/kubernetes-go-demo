@@ -10,3 +10,7 @@
     go run main.go   # run gin server
     go run main.go version  # see kubernetes-go-demo version
     go run main.go worker  # run machinery worker
+    
+# test
+    curl -H "Content-Type: application/json" -X POST "http://127.0.0.1:8018/kubernetes/deployment"
+    curl -H "Content-Type: application/json" -X PUT "http://127.0.0.1:8018/kubernetes/deployment"

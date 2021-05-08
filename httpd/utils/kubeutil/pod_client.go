@@ -52,8 +52,8 @@ func (client *PodClient) GetPodList(opts metav1.ListOptions) (*v1.PodList,error)
 }
 
 //监听Pod变化
-func (client *PodClient) WatchPod() {
-	w, _ := client.podInterface.Watch(metav1.ListOptions{})
+func (client *PodClient) WatchPod(opts metav1.ListOptions) {
+	w, _ := client.podInterface.Watch(opts)
 	for {
 		select {
 		case e, ok := <-w.ResultChan():

@@ -6,8 +6,10 @@ import (
 )
 
 func DeploymentRoutes(route *gin.Engine) {
-	deployment := route.Group("/kubernetes/deployment")
+	deployment := route.Group("/kubernetes")
 	{
-		deployment.GET("/list", kubernetes.GetDeploymentList)
+		deployment.GET("/deployment/list", kubernetes.GetDeploymentList)
+		deployment.POST("/deployment", kubernetes.CreateDeploymentList)
+		deployment.PUT("/deployment", kubernetes.UpdateDeploymentList)
 	}
 }

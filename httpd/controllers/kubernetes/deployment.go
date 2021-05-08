@@ -22,6 +22,20 @@ func CreateDeploymentList(c *gin.Context){
 	resp.ToSuccess(c)
 }
 
+func UpdateDeploymentList(c *gin.Context){
+	var resp utils.Response
+	deploymentClient := kubeutil.NewDeploymentClient("default")
+	yamlFile := filepath.Join(config.GetAppConfig().YamlDir,"deployments/nginx-deployment.yaml")
+	deployment, err:= deploymentClient.UpdateDeployment(yamlFile)
+	if err != nil {
+		resp.ToMsgBadRequest(c, err.Error())
+		return
+	}
+	resp.Data = deployment
+	resp.ToSuccess(c)
+}
+
+
 func GetDeploymentList(c *gin.Context){
 	var resp utils.Response
 	deploymentClient := kubeutil.NewDeploymentClient("default")

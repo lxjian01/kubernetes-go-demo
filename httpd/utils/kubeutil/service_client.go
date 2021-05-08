@@ -52,8 +52,8 @@ func (client *ServiceClient) GetServiceList(opts metav1.ListOptions) (*v1.Servic
 }
 
 //监听Deployment变化
-func (client *ServiceClient) WatchDeployment() {
-	w, _ := client.serviceInterface.Watch(metav1.ListOptions{})
+func (client *ServiceClient) WatchDeployment(opts metav1.ListOptions) {
+	w, _ := client.serviceInterface.Watch(opts)
 	for {
 		select {
 		case e, ok := <-w.ResultChan():

@@ -73,8 +73,8 @@ func (client *DeploymentClient) GetDeploymentList(opts metav1.ListOptions) (*v1.
 }
 
 //监听Deployment变化
-func (client *DeploymentClient) WatchDeployment() {
-	w, _ := client.deploymentInterface.Watch(metav1.ListOptions{})
+func (client *DeploymentClient) WatchDeployment(opts metav1.ListOptions) {
+	w, _ := client.deploymentInterface.Watch(opts)
 	for {
 		select {
 		case e, ok := <-w.ResultChan():
