@@ -29,7 +29,7 @@ func NewDeploymentClient(name string) *DeploymentClient {
 	return &client
 }
 
-func (client *DeploymentClient) getDeploymentByYamlFile(yamlFile string) (*v1.Deployment,error){
+func (client *DeploymentClient) GetDeploymentByYamlFile(yamlFile string) (*v1.Deployment,error){
 	deploymentBytes,err := ioutil.ReadFile(yamlFile)
 	if err != nil {
 		log.Errorf("Read deployment file error by %v \n", err)
@@ -51,13 +51,13 @@ func (client *DeploymentClient) getDeploymentByYamlFile(yamlFile string) (*v1.De
 }
 
 func (client *DeploymentClient) CreateDeployment(yamlFile string) (*v1.Deployment,error){
-	deployment,err := client.getDeploymentByYamlFile(yamlFile)
+	deployment,err := client.GetDeploymentByYamlFile(yamlFile)
 	deploymentInfo,err := client.deploymentInterface.Create(deployment)
 	return deploymentInfo,err
 }
 
 func (client *DeploymentClient) UpdateDeployment(yamlFile string) (*v1.Deployment,error){
-	deployment,err := client.getDeploymentByYamlFile(yamlFile)
+	deployment,err := client.GetDeploymentByYamlFile(yamlFile)
 	deploymentInfo,err := client.deploymentInterface.Update(deployment)
 	return deploymentInfo,err
 }

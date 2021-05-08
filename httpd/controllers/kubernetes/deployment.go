@@ -27,6 +27,8 @@ func UpdateDeploymentList(c *gin.Context){
 	deploymentClient := kubeutil.NewDeploymentClient("default")
 	yamlFile := filepath.Join(config.GetAppConfig().YamlDir,"deployments/nginx-deployment.yaml")
 	deployment, err:= deploymentClient.UpdateDeployment(yamlFile)
+	opt := metav1.ListOptions{}
+	deploymentClient.WatchDeployment(opt)
 	if err != nil {
 		resp.ToMsgBadRequest(c, err.Error())
 		return
