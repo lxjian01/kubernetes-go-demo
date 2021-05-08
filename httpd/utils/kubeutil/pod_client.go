@@ -1,4 +1,4 @@
-package k8s
+package kubeutil
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	"k8s.io/client-go/tools/cache"
-	k8s2 "kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	"time"
 )
@@ -21,7 +20,7 @@ type PodClient struct {
 
 func NewPodClient(name string) *PodClient {
 	client := PodClient{Name: name}
-	clientset := k8s2.GetClientset()
+	clientset := GetClientset()
 	podInterface := clientset.CoreV1().Pods(client.Name)
 	client.podInterface = podInterface
 	return &client

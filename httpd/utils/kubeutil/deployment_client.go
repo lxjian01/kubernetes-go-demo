@@ -1,4 +1,4 @@
-package k8s
+package kubeutil
 
 import (
 	"encoding/json"
@@ -12,7 +12,6 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
 	"k8s.io/client-go/tools/cache"
-	k8s2 "kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	"time"
 )
@@ -24,7 +23,7 @@ type DeploymentClient struct {
 
 func NewDeploymentClient(name string) *DeploymentClient {
 	client := DeploymentClient{Name: name}
-	clientset := k8s2.GetClientset()
+	clientset := GetClientset()
 	deploymentInterface := clientset.AppsV1().Deployments(client.Name)
 	client.deploymentInterface = deploymentInterface
 	return &client

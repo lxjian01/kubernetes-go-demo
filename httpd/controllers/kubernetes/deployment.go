@@ -5,13 +5,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"kubernetes-go-demo/global/config"
 	"kubernetes-go-demo/httpd/utils"
-	"kubernetes-go-demo/httpd/utils/k8s"
+	"kubernetes-go-demo/httpd/utils/kubeutil"
 	"path/filepath"
 )
 
 func CreateDeploymentList(c *gin.Context){
 	var resp utils.Response
-	deploymentClient := k8s.NewDeploymentClient("default")
+	deploymentClient := kubeutil.NewDeploymentClient("default")
 	yamlFile := filepath.Join(config.GetAppConfig().YamlDir,"deployments/nginx-deployment.yaml")
 	deployment, err:= deploymentClient.CreateDeployment(yamlFile)
 	if err != nil {
@@ -24,7 +24,7 @@ func CreateDeploymentList(c *gin.Context){
 
 func GetDeploymentList(c *gin.Context){
 	var resp utils.Response
-	deploymentClient := k8s.NewDeploymentClient("default")
+	deploymentClient := kubeutil.NewDeploymentClient("default")
 	deploymentList, err := deploymentClient.GetDeploymentList(metav1.ListOptions{})
 	if err != nil {
 		resp.ToMsgBadRequest(c, err.Error())

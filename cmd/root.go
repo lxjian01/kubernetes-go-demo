@@ -7,12 +7,12 @@ import (
 	appConf "kubernetes-go-demo/config"
 	globalConf "kubernetes-go-demo/global/config"
 	"kubernetes-go-demo/global/gorm"
-	"kubernetes-go-demo/global/k8s"
 	"kubernetes-go-demo/global/log"
 	globalMachinery "kubernetes-go-demo/global/machinery"
 	"kubernetes-go-demo/global/pools"
 	"kubernetes-go-demo/global/redis"
 	"kubernetes-go-demo/httpd"
+	k8s2 "kubernetes-go-demo/httpd/utils/kubeutil"
 	"os"
 	"path/filepath"
 )
@@ -46,7 +46,7 @@ var rootCmd = &cobra.Command{
 		log.Info("Init redis ok")
 
 		log.Info("Starting init kubernetes clientset")
-		k8s.InitClientset()
+		k8s2.InitClientset()
 		log.Info("Init kubernetes clientset ok")
 
 		log.Info("Starting init machinery server")
