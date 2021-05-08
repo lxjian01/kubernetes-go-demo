@@ -15,9 +15,9 @@ var server *machinery.Server
 
 func InitServer(conf *appconfig.MachineryConfig) {
 	cnf := &config.Config{
-		Broker: conf.Broker,
+		// Broker: conf.Broker,
 		DefaultQueue:    conf.DefaultQueue,
-		ResultBackend: conf.Backend,
+		// ResultBackend: conf.Backend,
 		ResultsExpireIn: 3600,
 		Redis: &config.RedisConfig{
 			MaxIdle:                3,
@@ -31,8 +31,8 @@ func InitServer(conf *appconfig.MachineryConfig) {
 	}
 
 	// Create server instance
-	broker := redisbroker.New(cnf, conf.Broker, "", "", 0)
-	backend := redisbackend.New(cnf, conf.Backend, "", "", 0)
+	broker := redisbroker.New(cnf, conf.Broker, "", "", conf.BrokerDB)
+	backend := redisbackend.New(cnf, conf.Backend, "", "", conf.BackendDb)
 	lock := eagerlock.New()
 	server = machinery.NewServer(cnf, broker, backend, lock)
 }

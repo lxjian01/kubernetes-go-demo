@@ -37,8 +37,7 @@ type MysqlConfig struct {
 
 type RedisConfig struct {
 	Host        string
-	Port        int
-	Password    string
+	Db int
 	MaxIdle     int
 	MaxActive   int
 	IdleTimeout int
@@ -46,6 +45,8 @@ type RedisConfig struct {
 
 type MachineryConfig struct {
 	Broker        string
-	Backend        string
-	DefaultQueue    string
+	BrokerDB      int
+	Backend       string
+	BackendDb     int
+	DefaultQueue  string
 }
