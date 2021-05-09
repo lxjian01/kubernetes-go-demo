@@ -69,7 +69,7 @@ func init() {
 // 启动调用的入口方法
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		fmt.Println("Execute error by ", err)
 		os.Exit(1)
 	}
 }
